@@ -37,17 +37,6 @@ public class UserEntity implements Serializable {
 
     private String password;
 
-    //private String address;
-
-   // @Column(length = 20)
-   // private String city;
-
-   // @Column(length = 20)
-    //private String state;
-
-   // @Column(length = 10)
-    //private String zipcode;
-
     private Boolean terms;
 
     @Column(name = "is_account_non_expired")
@@ -66,8 +55,7 @@ public class UserEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    public UserEntity(String name, String email, String mobile, String gender, String password,
-                      String address, String city, String state, String zipcode, Boolean terms,
+    public UserEntity(String name, String email, String mobile, String gender, String password, Boolean terms,
                       Boolean isAccountNonExpired, Boolean isAccountNonLocked,
                       Boolean isCredentialsNonExpired, Boolean isEnabled, UserRole userRole) {
         this.name = name;
@@ -75,10 +63,6 @@ public class UserEntity implements Serializable {
         this.mobile = mobile;
         this.gender = gender;
         this.password = password;
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.zipcode = zipcode;
         this.terms = terms;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
@@ -114,21 +98,6 @@ public class UserEntity implements Serializable {
 
     public UserEntity setPassword(String password) {
         this.password = password;
-        return this;
-    }
-
-    public UserEntity setCity(String city) {
-        this.city = city;
-        return this;
-    }
-
-    public UserEntity setState(String state) {
-        this.state = state;
-        return this;
-    }
-
-    public UserEntity setZipcode(String zipcode) {
-        this.zipcode = zipcode;
         return this;
     }
 
