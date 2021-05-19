@@ -60,12 +60,12 @@ public class UserController {
         return new Token(token);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{username}")
     @PreAuthorize("hasAuthority('READ')")
-    public UserEntity user(@PathVariable final String id) {
+    public UserEntity user(@PathVariable final String username) {
 
-        final UserEntity user = service.getUser(id)
-                .orElseThrow(() -> new UserNotFoundException("User: '" + id + "' not found"));
+        final UserEntity user = service.getUser(username)
+                .orElseThrow(() -> new UserNotFoundException("User: '" + username + "' not found"));
         if (authorizeUser(user, getUserName()))
             return user;
         else
@@ -79,24 +79,24 @@ public class UserController {
     }
 
 
-    @GetMapping("edit/{id}")
+    @GetMapping("edit/{username}")
     @PreAuthorize("hasAuthority('READ')")
-    public UserEntity editUser(@PathVariable final String id) {
-        final UserEntity user = service.getUser(id)
-                .orElseThrow(() -> new UserNotFoundException("User: '" + id + "' not found"));
+    public UserEntity editUser(@PathVariable final String username) {
+        final UserEntity user = service.getUser(username)
+                .orElseThrow(() -> new UserNotFoundException("User: '" + username + "' not found"));
         if (authorizeUser(user, getUserName()))
             return user;
         else
             throw new UnAuthorizedException("You are not authorized access this account");
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("update/{username}")
     @PreAuthorize("hasAuthority('READ')")
     public UserEntity updateUser(@RequestBody final UserEntity userEntity,
-                                 @PathVariable final String id) {
+                                 @PathVariable final String username) {
 
-        final UserEntity user = service.getUser(id)
-                .orElseThrow(() -> new UserNotFoundException("User: '" + id + "' not found"));
+        final UserEntity user = service.getUser(username)
+                .orElseThrow(() -> new UserNotFoundException("User: '" + username + "' not found"));
 
         if (!authorizeUser(user, getUserName()))
             throw new UnAuthorizedException("You are not authorized access this account");
@@ -151,11 +151,11 @@ public class UserController {
         return "Password reset successfully";
     }
 
-    @DeleteMapping("delete/{email}")
+    @DeleteMapping("delete/{username}")
     @PreAuthorize("hasAuthority('DELETE')")
-    public String delete(@PathVariable final String email) {
-        final UserEntity user = service.getUser(email)
-                .orElseThrow(() -> new UserNotFoundException("User: '" + email + "' not found."));
+    public String delete(@PathVariable final String username) {
+        final UserEntity user = service.getUser(username)
+                .orElseThrow(() -> new UserNotFoundException("User: '" + username + "' not found."));
         service.deleteById(user.getId());
         return "User is deleted";
     }
@@ -165,11 +165,11 @@ public class UserController {
         return jwtUtil.getUserName(token);
     }
 
-    private boolean authorizeUser(UserEntity user, String userName) {
-        if (user.getEmail().equals(userName) || user.getId().equals(userName) || user.getMobile().equals(userName))
+    private boolean authorizeUser(UserEntity user, String username) {
+        if (user.getEmail().equals(username) || user.getId().equals(username) || user.getMobile().equals(username))
             return true;
         else {
-            final UserEntity userEntity = service.getUser(userName)
+            final UserEntity userEntity = service.getUser(username)
                     .get();
 
             if (userEntity.getUserRole().equals(ROLE_ADMIN) || userEntity.getUserRole().equals(ROLE_SUPER_ADMIN))
