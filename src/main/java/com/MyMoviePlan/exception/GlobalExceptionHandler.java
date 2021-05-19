@@ -26,7 +26,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         final String exceptionMessage = exception.getMessage();
         if (statusCode == null || statusCode == 0) {
             statusCode = status;
-            if (statusCode >= 200 && statusCode <= 299)
+            if (HttpStatus.valueOf(status).getReasonPhrase().equals("OK"))
                 statusCode = 403;
 //            if (exceptionMessage.equals("Access is denied"))
 //                statusCode = 403;
