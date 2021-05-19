@@ -22,7 +22,7 @@ public class LanguageEntity implements Serializable {
     private String name;
 
     @ToString.Exclude
-    @ManyToMany(targetEntity = MovieEntity.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = MovieEntity.class)
     @JoinTable(name = "movie_languages",
             joinColumns = @JoinColumn(name = "language_id", unique = false),
             inverseJoinColumns = @JoinColumn(name = "movie_id", unique = false))

@@ -1,9 +1,6 @@
 package com.MyMoviePlan.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,7 +25,7 @@ public class MovieEntity implements Serializable {
     @Column(length = 1000)
     private String image;
 
-    @Column(length = 1000)
+    @Column(name = "bg_image",length = 1000)
     private String bgImage;
 
     @Column(length = 1000)
@@ -43,21 +40,26 @@ public class MovieEntity implements Serializable {
     @Column(length = 10)
     private String rating;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "added_on")
+    @Temporal(TemporalType.DATE)
     private Date addedOn;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date release;
 
+    @ToString.Exclude
     @ManyToMany(targetEntity = LanguageEntity.class, cascade = CascadeType.ALL, mappedBy = "movies")
     private List<LanguageEntity> languages;
 
+    @ToString.Exclude
     @ManyToMany(targetEntity = GenreEntity.class, cascade = CascadeType.ALL, mappedBy = "movies")
     private List<GenreEntity> genres;
 
+    @ToString.Exclude
     @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL, mappedBy = "movie")
     private List<ActorEntity> casts;
 
+    @ToString.Exclude
     @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL, mappedBy = "movie")
     private List<ActorEntity> crews;
 

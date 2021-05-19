@@ -27,7 +27,7 @@ public class ActorEntity implements Serializable {
     private String image;
 
     @ToString.Exclude
-    @ManyToOne(targetEntity = MovieEntity.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = MovieEntity.class)
     @JoinColumn(name = "movie_id")
     private MovieEntity movie;
 
