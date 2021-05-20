@@ -172,9 +172,7 @@ public class UserController {
             final UserEntity userEntity = service.getUser(username)
                     .get();
 
-            if (userEntity.getUserRole().equals(ROLE_ADMIN) || userEntity.getUserRole().equals(ROLE_SUPER_ADMIN))
-                return true;
+            return userEntity.getUserRole().equals(ROLE_ADMIN) || userEntity.getUserRole().equals(ROLE_SUPER_ADMIN);
         }
-        return false;
     }
 }
