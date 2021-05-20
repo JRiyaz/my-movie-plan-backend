@@ -1,5 +1,6 @@
 package com.MyMoviePlan.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,21 +27,16 @@ public class ActorEntity implements Serializable {
     @Column(length = 1000)
     private String image;
 
+    @JsonIgnore
     @ToString.Exclude
-    @ManyToOne(targetEntity = MovieEntity.class)
+    @EqualsAndHashCode.Exclude
     @JoinColumn(name = "movie_id")
+    @ManyToOne(targetEntity = MovieEntity.class)
     private MovieEntity movie;
 
     public ActorEntity(String name, String role, String image) {
         this.name = name;
         this.role = role;
         this.image = image;
-    }
-
-    public ActorEntity(String name, String role, String image, MovieEntity movie) {
-        this.name = name;
-        this.role = role;
-        this.image = image;
-        this.movie = movie;
     }
 }

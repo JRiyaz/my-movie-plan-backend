@@ -1,5 +1,6 @@
 package com.MyMoviePlan.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,35 +22,27 @@ public class ShowEntity implements Serializable {
     @Column(length = 50)
     private String name;
 
-    @Column(name = "start_time",length = 50)
+    @Column(name = "start_time", length = 50)
     private String startTime;
 
+    @JsonIgnore
     @ToString.Exclude
-    @ManyToOne(targetEntity = AuditoriumEntity.class)
+    @EqualsAndHashCode.Exclude
     @JoinColumn(name = "auditorium_id")
+    @ManyToOne(targetEntity = AuditoriumEntity.class, cascade = CascadeType.ALL)
     private AuditoriumEntity auditorium;
 
+    //    @JsonManagedReference
     @ToString.Exclude
-    @OneToMany(targetEntity = MovieShowsEntity.class, cascade = CascadeType.ALL, mappedBy = "show")
+    @EqualsAndHashCode.Exclude
+    @OneToMany(targetEntity = MovieShowsEntity.class, cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, mappedBy = "show")
     private List<MovieShowsEntity> movieShows;
 
-    @ToString.Exclude
-    @OneToMany(targetEntity = BookingEntity.class, cascade = CascadeType.ALL, mappedBy = "show")
-    private List<BookingEntity> bookings;
-
-    @ToString.Exclude
-    @OneToOne(targetEntity = PriceEntity.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "price_id")
-    private PriceEntity price;
-
-    public ShowEntity(String name, String startTime, AuditoriumEntity auditorium,
-                      List<MovieShowsEntity> movieShows, List<BookingEntity> bookings, PriceEntity price) {
+    public ShowEntity(String name, String startTime, List<MovieShowsEntity> movieShows) {
         this.name = name;
         this.startTime = startTime;
-        this.auditorium = auditorium;
         this.movieShows = movieShows;
-        this.bookings = bookings;
-        this.price = price;
     }
 
     public ShowEntity setId(int id) {
@@ -74,16 +67,6 @@ public class ShowEntity implements Serializable {
 
     public ShowEntity setMovieShows(List<MovieShowsEntity> movieShows) {
         this.movieShows = movieShows;
-        return this;
-    }
-
-    public ShowEntity setBookings(List<BookingEntity> bookings) {
-        this.bookings = bookings;
-        return this;
-    }
-
-    public ShowEntity setPrice(PriceEntity price) {
-        this.price = price;
         return this;
     }
 }

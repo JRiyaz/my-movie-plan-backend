@@ -6,6 +6,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id", scope = ShowEntity.class)
 @Entity
 @Data
 @NoArgsConstructor
@@ -37,19 +39,25 @@ public class AuditoriumEntity implements Serializable {
     private int seatCapacity;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ElementCollection
     @CollectionTable(name = "auditorium_facilities", joinColumns = @JoinColumn(name = "auditorium_id"))
     @Column(name = "facility")
     private List<String> facilities;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ElementCollection
     @CollectionTable(name = "auditorium_safeties", joinColumns = @JoinColumn(name = "auditorium_id"))
     @Column(name = "safety")
     private List<String> safeties;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(targetEntity = ShowEntity.class, cascade = CascadeType.ALL, mappedBy = "auditorium")
+//    @JoinTable(name = "auditorium_shows",
+//            joinColumns = @JoinColumn(name = "auditorium_id", unique = false),
+//            inverseJoinColumns = @JoinColumn(name = "show_id", unique = false))
     private List<ShowEntity> shows;
 
     public AuditoriumEntity(String name, String image, String email, String customerCareNo, String address,

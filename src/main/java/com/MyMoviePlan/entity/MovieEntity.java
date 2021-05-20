@@ -48,18 +48,28 @@ public class MovieEntity implements Serializable {
     private Date release;
 
     @ToString.Exclude
-    @ManyToMany(targetEntity = LanguageEntity.class, cascade = CascadeType.ALL, mappedBy = "movies")
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(targetEntity = LanguageEntity.class, cascade = CascadeType.ALL)
+    @JoinTable(name = "movie_languages",
+            joinColumns = @JoinColumn(name = "movie_id", unique = false),
+            inverseJoinColumns = @JoinColumn(name = "language_id", unique = false))
     private List<LanguageEntity> languages;
 
     @ToString.Exclude
-    @ManyToMany(targetEntity = GenreEntity.class, cascade = CascadeType.ALL, mappedBy = "movies")
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(targetEntity = GenreEntity.class, cascade = CascadeType.ALL)
+    @JoinTable(name = "movie_genres",
+            joinColumns = @JoinColumn(name = "movie_id", unique = false),
+            inverseJoinColumns = @JoinColumn(name = "genre_id", unique = false))
     private List<GenreEntity> genres;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL, mappedBy = "movie")
     private List<ActorEntity> casts;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL, mappedBy = "movie")
     private List<ActorEntity> crews;
 

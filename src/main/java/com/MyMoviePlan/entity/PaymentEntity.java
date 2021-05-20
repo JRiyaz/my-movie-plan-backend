@@ -1,6 +1,9 @@
 package com.MyMoviePlan.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,19 +39,20 @@ public class PaymentEntity implements Serializable {
     @Column(name = "card_cvv", length = 5)
     private String cardCVV;
 
-    @ToString.Exclude
-    @OneToOne(targetEntity = BookingEntity.class, mappedBy = "payment")
-    private BookingEntity booking;
+//    @ToString.Exclude
+//    @JsonBackReference
+//    @EqualsAndHashCode.Exclude
+//    @OneToOne(targetEntity = BookingEntity.class, mappedBy = "payment")
+//    private BookingEntity booking;
 
     public PaymentEntity(double amount, Date paymentDate, String cardNumber, String cardExpiryMonth,
-                         String cardExpiryYear, String cardCVV, BookingEntity booking) {
+                         String cardExpiryYear, String cardCVV) {
         this.amount = amount;
         this.paymentDate = paymentDate;
         this.cardNumber = cardNumber;
         this.cardExpiryMonth = cardExpiryMonth;
         this.cardExpiryYear = cardExpiryYear;
         this.cardCVV = cardCVV;
-        this.booking = booking;
     }
 
     public PaymentEntity setId(int id) {
@@ -86,8 +90,8 @@ public class PaymentEntity implements Serializable {
         return this;
     }
 
-    public PaymentEntity setBooking(BookingEntity booking) {
-        this.booking = booking;
-        return this;
-    }
+//    public PaymentEntity setBooking(BookingEntity booking) {
+//        this.booking = booking;
+//        return this;
+//    }
 }
