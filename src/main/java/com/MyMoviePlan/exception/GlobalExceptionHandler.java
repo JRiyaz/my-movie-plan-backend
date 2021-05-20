@@ -19,23 +19,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                         final HttpServletResponse response) {
         Integer statusCode = (Integer) request
                 .getAttribute("javax.servlet.error.status_code");
+
         final int status = response.getStatus();
-        System.err.println("-------- Response status ------ " + status);
-        System.err.println("Exception Phrase ------ " + HttpStatus.valueOf(status).getReasonPhrase());
 
         final String exceptionMessage = exception.getMessage();
         if (statusCode == null || statusCode == 0) {
             statusCode = status;
             if (HttpStatus.valueOf(status).getReasonPhrase().equals("OK"))
                 statusCode = 403;
-//            if (exceptionMessage.equals("Access is denied"))
-//                statusCode = 403;
-//            else
-//                statusCode = 400;
-            System.err.println("From ExceptionHandler");
+            System.err.println("======== From ExceptionHandler");
         }
 
         final HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
+
+        System.err.println("======== status code: " + status);
+        System.err.println("======== Exception : " + httpStatus.getReasonPhrase());
+
         final HttpResponse httpResponse =
                 new HttpResponse(statusCode, httpStatus.getReasonPhrase(), exceptionMessage);
         return new ResponseEntity<HttpResponse>(httpResponse, httpStatus);
