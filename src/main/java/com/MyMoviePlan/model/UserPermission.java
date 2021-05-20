@@ -9,5 +9,5 @@ public enum UserPermission {
     READ,
     WRITE,
     UPDATE,
-    DELETE;
+    DELETE
 }

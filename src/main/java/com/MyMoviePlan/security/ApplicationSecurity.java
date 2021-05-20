@@ -10,6 +10,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,12 +35,15 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors().disable();
+        http.headers().frameOptions().sameOrigin();
         http.authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/user/authenticate", "/user/sign-up")
                 .permitAll()
                 .antMatchers(HttpMethod.PUT, "/user/forgot-password")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/auditorium/**", "/movie/**", "/show/**")
                 .permitAll()
                 .anyRequest()
                 .fullyAuthenticated()
@@ -49,6 +53,12 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers("/h2-console/**");
     }
 
     @Override

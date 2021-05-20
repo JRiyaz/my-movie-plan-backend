@@ -18,17 +18,14 @@ public class UserService {
     private final UserRepository repository;
 
     public Optional<UserEntity> findByEmail(final String email) {
-        System.err.println("Find by Email Service layer");
         return repository.findByEmail(email);
     }
 
     public Optional<UserEntity> findByMobile(final String mobile) {
-        System.err.println("Find by Mobile Service layer");
         return repository.findByMobile(mobile);
     }
 
     public Optional<UserEntity> findById(final String id) {
-        System.err.println("Find by ID Service layer");
         return repository.findById(id);
     }
 

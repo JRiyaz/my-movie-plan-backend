@@ -21,7 +21,7 @@ public class InitialData implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         final UserEntity super_admin = new UserEntity("Riyaz J", "j.riyazu@gmail.com",
-                "8099531318", "Male", passwordEncoder.encode("admin"), true,
+                "8099531318", "Male", passwordEncoder.encode("super"), true,
                 true, true, true, true,
                 ROLE_SUPER_ADMIN);
 
@@ -31,7 +31,7 @@ public class InitialData implements CommandLineRunner {
                 ROLE_ADMIN);
 
         final UserEntity user = new UserEntity("Inthiyaz J", "j.inthiyaz@gmail.com",
-                "8985462507", "Male", passwordEncoder.encode("admin"), true,
+                "8985462507", "Male", passwordEncoder.encode("user"), true,
                 true, true, true, true,
                 ROLE_USER);
 
