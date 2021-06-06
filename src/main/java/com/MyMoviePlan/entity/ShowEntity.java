@@ -19,24 +19,22 @@ public class ShowEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50)
     private String name;
 
-    @Column(name = "start_time", length = 50)
+    @Column(name = "start_time")
     private String startTime;
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "auditorium_id")
-    @ManyToOne(targetEntity = AuditoriumEntity.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = AuditoriumEntity.class)
     private AuditoriumEntity auditorium;
 
     //    @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = MovieShowsEntity.class, cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, mappedBy = "show")
+    @OneToMany(targetEntity = MovieShowsEntity.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "show_id", referencedColumnName = "id")
     private List<MovieShowsEntity> movieShows;
 
     public ShowEntity(String name, String startTime, List<MovieShowsEntity> movieShows) {

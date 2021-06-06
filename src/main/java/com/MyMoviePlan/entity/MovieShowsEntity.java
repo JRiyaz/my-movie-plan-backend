@@ -21,45 +21,43 @@ public class MovieShowsEntity implements Serializable {
     private int id;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "show_start")
     private Date start;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "show_end")
     private Date end;
+
+    @Column(name = "movie_id")
+    private int movieId;
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne(targetEntity = ShowEntity.class)
-    @JoinColumn(name = "show_id")
     private ShowEntity show;
 
-    @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(targetEntity = MovieEntity.class)
-    @JoinColumn(name = "movie_id")
-    private MovieEntity movie;
-
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = BookingEntity.class, cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinTable(name = "movie_show_bookings",
-            joinColumns = @JoinColumn(name = "movie_show_id", unique = false),
-            inverseJoinColumns = @JoinColumn(name = "booking_id", unique = false))
+    @JoinColumn(name = "movie_show_id", referencedColumnName = "id")
+    @OneToMany(targetEntity = BookingEntity.class, cascade = CascadeType.ALL)
+//    @JoinTable(name = "movie_show_bookings",
+//            joinColumns = @JoinColumn(name = "movie_show_id", unique = false),
+//            inverseJoinColumns = @JoinColumn(name = "booking_id", unique = false))
     private List<BookingEntity> bookings;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(targetEntity = PriceEntity.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(targetEntity = PriceEntity.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "price_id")
     private PriceEntity price;
 
-    public MovieShowsEntity(Date start, Date end, ShowEntity show, MovieEntity movie) {
+    public MovieShowsEntity(int id, Date start, Date end, List<BookingEntity> bookings, int movieId) {
+        this.id  = id;
         this.start = start;
         this.end = end;
-        this.show = show;
-        this.movie = movie;
+        this.bookings = bookings;
+        this.movieId = movieId;
     }
 
     public MovieShowsEntity setId(int id) {
@@ -82,8 +80,8 @@ public class MovieShowsEntity implements Serializable {
         return this;
     }
 
-    public MovieShowsEntity setMovie(MovieEntity movie) {
-        this.movie = movie;
+    public MovieShowsEntity setMovieId(int movieId) {
+        this.movieId = movieId;
         return this;
     }
 }

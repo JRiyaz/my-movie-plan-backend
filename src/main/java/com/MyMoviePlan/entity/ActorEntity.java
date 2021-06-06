@@ -18,19 +18,19 @@ public class ActorEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50)
+    @Column(name = "is_cast")
+    private String isCast;
+
     private String name;
 
-    @Column(length = 50)
     private String role;
 
-    @Column(length = 1000)
+    @Column(length = Integer.MAX_VALUE, columnDefinition="TEXT")
     private String image;
-
-    @JsonIgnore
+	
+	@JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "movie_id")
     @ManyToOne(targetEntity = MovieEntity.class)
     private MovieEntity movie;
 

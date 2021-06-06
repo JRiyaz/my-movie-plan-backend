@@ -19,26 +19,22 @@ public class MovieEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50)
     private String name;
 
-    @Column(length = 1000)
+    @Column(length = Integer.MAX_VALUE, columnDefinition = "TEXT")
     private String image;
 
-    @Column(name = "bg_image",length = 1000)
+    @Column(name = "bg_image", length = Integer.MAX_VALUE, columnDefinition="TEXT")
     private String bgImage;
 
-    @Column(length = 1000)
+    @Column(length = 9000)
     private String story;
 
-    @Column(length = 5)
     private String year;
 
-    @Column(length = 20)
     private String duration;
 
-    @Column(length = 10)
-    private String rating;
+    private String caption;
 
     @Column(name = "added_on")
     @Temporal(TemporalType.DATE)
@@ -47,45 +43,40 @@ public class MovieEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date release;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @ManyToMany(targetEntity = LanguageEntity.class, cascade = CascadeType.ALL)
-    @JoinTable(name = "movie_languages",
-            joinColumns = @JoinColumn(name = "movie_id", unique = false),
-            inverseJoinColumns = @JoinColumn(name = "language_id", unique = false))
-    private List<LanguageEntity> languages;
+    private String language;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany(targetEntity = GenreEntity.class, cascade = CascadeType.ALL)
-    @JoinTable(name = "movie_genres",
-            joinColumns = @JoinColumn(name = "movie_id", unique = false),
-            inverseJoinColumns = @JoinColumn(name = "genre_id", unique = false))
-    private List<GenreEntity> genres;
+    @ElementCollection
+    @CollectionTable(name = "movie_genres", joinColumns = @JoinColumn(name = "movie_id"))
+    @Column(name = "genre")
+    private List<String> genres;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL, mappedBy = "movie")
+    @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "movie_id", referencedColumnName = "id")
     private List<ActorEntity> casts;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL, mappedBy = "movie")
+    @OneToMany(targetEntity = ActorEntity.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "movie_id", referencedColumnName = "id")
     private List<ActorEntity> crews;
 
     public MovieEntity(String name, String image, String bgImage, String story, String year,
-                       String duration, String rating, Date addedOn, Date release, List<LanguageEntity> languages,
-                       List<GenreEntity> genres, List<ActorEntity> casts, List<ActorEntity> crews) {
+                       String duration, String caption, Date addedOn, Date release, String language,
+                       List<String> genres, List<ActorEntity> casts, List<ActorEntity> crews) {
         this.name = name;
         this.image = image;
         this.bgImage = bgImage;
         this.story = story;
         this.year = year;
         this.duration = duration;
-        this.rating = rating;
+        this.caption = caption;
         this.addedOn = addedOn;
         this.release = release;
-        this.languages = languages;
+        this.language = language;
         this.genres = genres;
         this.casts = casts;
         this.crews = crews;
@@ -126,8 +117,8 @@ public class MovieEntity implements Serializable {
         return this;
     }
 
-    public MovieEntity setRating(String rating) {
-        this.rating = rating;
+    public MovieEntity setCaption(String caption) {
+        this.caption = caption;
         return this;
     }
 
@@ -141,12 +132,12 @@ public class MovieEntity implements Serializable {
         return this;
     }
 
-    public MovieEntity setLanguages(List<LanguageEntity> languages) {
-        this.languages = languages;
+    public MovieEntity setLanguages(String language) {
+        this.language = language;
         return this;
     }
 
-    public MovieEntity setGenres(List<GenreEntity> genres) {
+    public MovieEntity setGenres(List<String> genres) {
         this.genres = genres;
         return this;
     }

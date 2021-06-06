@@ -20,19 +20,16 @@ public class AuditoriumEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50)
     private String name;
 
-    @Column(length = 1000)
+    @Column(length = Integer.MAX_VALUE, columnDefinition="TEXT")
     private String image;
 
-    @Column(length = 100)
     private String email;
 
-    @Column(name = "customer_care_no", length = 50)
+    @Column(name = "customer_care_no")
     private String customerCareNo;
 
-    @Column(length = 200)
     private String address;
 
     @Column(name = "seat_capacity")
@@ -54,7 +51,8 @@ public class AuditoriumEntity implements Serializable {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = ShowEntity.class, cascade = CascadeType.ALL, mappedBy = "auditorium")
+    @JoinColumn(name = "auditorium_id", referencedColumnName = "id")
+    @OneToMany(targetEntity = ShowEntity.class, cascade = CascadeType.ALL)
 //    @JoinTable(name = "auditorium_shows",
 //            joinColumns = @JoinColumn(name = "auditorium_id", unique = false),
 //            inverseJoinColumns = @JoinColumn(name = "show_id", unique = false))

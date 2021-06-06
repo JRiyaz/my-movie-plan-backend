@@ -25,11 +25,16 @@ public class BookingEntity implements Serializable {
     @Column(name = "total_seats")
     private int totalSeats;
 
-    private boolean status;
+    @Column(name = "booked_on")
+    @Temporal(TemporalType.DATE)
+    private Date bookedOn;
 
     @Column(name = "date_of_booking")
     @Temporal(TemporalType.DATE)
     private Date dateOfBooking;
+
+    @Column(name = "user_id")
+    private String userId;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -40,26 +45,31 @@ public class BookingEntity implements Serializable {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToOne(targetEntity = PaymentEntity.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(targetEntity = PaymentEntity.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id")
     private PaymentEntity payment;
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @ManyToOne(targetEntity = MovieShowsEntity.class)
+    private MovieShowsEntity movieShow;
 
-    public BookingEntity(double amount, int totalSeats, boolean status, Date dateOfBooking, List<String> seatNumbers,
-                         PaymentEntity payment, UserEntity user) {
+    public BookingEntity(double amount, int totalSeats, Date bookedOn, Date dateOfBooking, List<String> seatNumbers,
+                         PaymentEntity payment, String userId, MovieShowsEntity movieShow) {
         this.amount = amount;
         this.totalSeats = totalSeats;
-        this.status = status;
+        this.bookedOn = bookedOn;
         this.dateOfBooking = dateOfBooking;
         this.seatNumbers = seatNumbers;
         this.payment = payment;
-        this.user = user;
+        this.userId = userId;
+        this.movieShow = movieShow;
+    }
+
+    public BookingEntity setMovieShow(MovieShowsEntity movieShow) {
+        this.movieShow = movieShow;
+        return this;
     }
 
     public BookingEntity setId(int id) {
@@ -77,8 +87,8 @@ public class BookingEntity implements Serializable {
         return this;
     }
 
-    public BookingEntity setStatus(boolean status) {
-        this.status = status;
+    public BookingEntity setStatus(Date bookedOn) {
+        this.bookedOn = bookedOn;
         return this;
     }
 
@@ -97,8 +107,8 @@ public class BookingEntity implements Serializable {
         return this;
     }
 
-    public BookingEntity setUser(UserEntity user) {
-        this.user = user;
+    public BookingEntity setUserId(String userId) {
+        this.userId = userId;
         return this;
     }
 }

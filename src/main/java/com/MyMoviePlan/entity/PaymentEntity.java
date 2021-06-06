@@ -39,12 +39,6 @@ public class PaymentEntity implements Serializable {
     @Column(name = "card_cvv", length = 5)
     private String cardCVV;
 
-//    @ToString.Exclude
-//    @JsonBackReference
-//    @EqualsAndHashCode.Exclude
-//    @OneToOne(targetEntity = BookingEntity.class, mappedBy = "payment")
-//    private BookingEntity booking;
-
     public PaymentEntity(double amount, Date paymentDate, String cardNumber, String cardExpiryMonth,
                          String cardExpiryYear, String cardCVV) {
         this.amount = amount;
@@ -89,9 +83,4 @@ public class PaymentEntity implements Serializable {
         this.cardCVV = cardCVV;
         return this;
     }
-
-//    public PaymentEntity setBooking(BookingEntity booking) {
-//        this.booking = booking;
-//        return this;
-//    }
 }
