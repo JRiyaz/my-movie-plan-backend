@@ -27,13 +27,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             statusCode = status;
             if (HttpStatus.valueOf(status).getReasonPhrase().equals("OK"))
                 statusCode = 403;
-            System.err.println("======== From ExceptionHandler");
         }
 
         final HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
-
-        System.err.println("======== status code: " + status);
-        System.err.println("======== Exception : " + httpStatus.getReasonPhrase());
 
         final HttpResponse httpResponse =
                 new HttpResponse(statusCode, httpStatus.getReasonPhrase(), exceptionMessage);
