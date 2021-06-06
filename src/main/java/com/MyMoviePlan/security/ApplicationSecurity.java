@@ -16,6 +16,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -33,17 +38,12 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.cors().disable();
         http.headers().frameOptions().sameOrigin();
-        http.authorizeRequests()
+        http.csrf().disable().cors().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
+        .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll()
-                .antMatchers(HttpMethod.POST, "/user/authenticate", "/user/sign-up")
-                .permitAll()
-                .antMatchers(HttpMethod.PUT, "/user/forgot-password")
-                .permitAll()
-                .antMatchers(HttpMethod.GET, "/auditorium/**", "/movie/**", "/show/**")
                 .permitAll()
                 .anyRequest()
                 .fullyAuthenticated()
@@ -55,10 +55,19 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
+//                .antMatchers(HttpMethod.POST, "/user/authenticate", "/user/sign-up")
+//                .permitAll()
+//                .antMatchers(HttpMethod.PUT, "/user/forgot-password")
+//                .permitAll()
+//                .antMatchers(HttpMethod.GET, "/auditorium/**", "/movie/**", "/show/**", "/user/check/**")
+//                .permitAll()
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/h2-console/**");
+                .antMatchers("/h2-console/**", "/auditorium/**", "/movie/**", "/show/**", "/user/**",
+                        "/user/forgot-password", "/user/authenticate", "/movie-show/**",
+                        "/booking/**", "/logout");
     }
 
     @Override
@@ -73,6 +82,22 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         authenticationProvider.setUserDetailsService(userDetailsService);
         return authenticationProvider;
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowCredentials(true);
+        //the below three lines will add the relevant CORS response headers
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
 
     @Override
     @Bean
