@@ -2,21 +2,57 @@ package com.MyMoviePlan.controller;
 
 import com.MyMoviePlan.entity.BookingEntity;
 import com.MyMoviePlan.entity.MovieShowsEntity;
-import com.MyMoviePlan.exception.BookingNotFoundException;
 import com.MyMoviePlan.exception.MovieShowNotFoundException;
+import com.MyMoviePlan.model.BookedSeats;
 import com.MyMoviePlan.repository.MovieShowsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/movie-show")
 @AllArgsConstructor
 public class MovieShowController {
 
     private final MovieShowsRepository repository;
+
+    @PostMapping("add")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public MovieShowsEntity save(@RequestBody MovieShowsEntity movieShow) {
+        return repository.save(movieShow);
+    }
+
+    @GetMapping("up-coming")
+    @PreAuthorize("hasAuthority('READ')")
+    public List<MovieShowsEntity> upComing(@RequestParam(value = "records", required = false) Optional<String> records) {
+        if (records.isPresent())
+            return repository.findFewUpComing(Integer.parseInt(records.get()));
+        return repository.findAllUpComing();
+    }
+
+    @GetMapping("now-playing")
+    public List<MovieShowsEntity> nowPlaying(@RequestParam(value = "records", required = false) Optional<String> records) {
+        if (records.isPresent())
+            return repository.findFewNowPlaying(Integer.parseInt(records.get()));
+        return repository.findAllNowPlaying();
+    }
+
+    @GetMapping("now-playing-up-coming")
+    public List<MovieShowsEntity> nowPlayingAndUpComing() {
+        return repository.findAllNowPlayingAndUpComing();
+    }
+
+    @GetMapping("not-playing")
+    @PreAuthorize("hasAuthority('WRITE')")
+    public List<MovieShowsEntity> notPlaying() {
+        return repository.findAllNotPlaying();
+    }
 
     @GetMapping("all")
     public List<MovieShowsEntity> findAllMovieShows() {
@@ -37,68 +73,24 @@ public class MovieShowController {
         repository.deleteById(movie_show_id);
     }
 
+
     /*
      *   ============================= Booking Controller ==========================
      */
 
-    @GetMapping("{movie_show_id}/booking/{booking_id}")
+    @GetMapping("{movie_show_id}/booked-seats/{on}")
     @PreAuthorize("hasAuthority('READ')")
-    public BookingEntity findBookingById(@PathVariable final int movie_show_id,
-                                         @PathVariable final int booking_id) {
-        final MovieShowsEntity movieShow = this.findMovieShowById(movie_show_id);
-        return movieShow.getBookings()
-                .stream().filter(booking -> booking.getId() == solveId(booking_id))
-                .findFirst()
-                .orElseThrow(() -> new BookingNotFoundException("Booking with id: "
-                        + actualId(booking_id) + " not found."));
-    }
+    public BookedSeats bookedSeats(@PathVariable final int movie_show_id, @PathVariable final String on) {
+        final List<BookingEntity> bookings = this.findMovieShowById(movie_show_id).getBookings()
+                .stream().filter(m_show -> m_show.getDateOfBooking().toString().equals(on))
+                .collect(Collectors.toList());
 
-    @GetMapping("{movie_show_id}/booking/all")
-    @PreAuthorize("hasAuthority('READ')")
-    public List<BookingEntity> allBookings(@PathVariable final int movie_show_id) {
-        return this.findMovieShowById(movie_show_id).getBookings();
-    }
-
-//    @PostMapping("{movie_show_id}/booking/add")
-//    @PreAuthorize("hasAuthority('WRITE')")
-//    public BookingEntity saveBooking(@PathVariable final int movie_show_id,
-//                                     @RequestBody final BookingEntity booking) {
-//        final ShowEntity show = this.findShowById(auditorium_id, show_id);
-//        final MovieShowsEntity movieShow = this.getMovieShowEntity(show, movie_show_id);
-//        movieShow.setShow(show)
-//                .getBookings()
-//                .add(booking);
-//        this.movieShow.save(movieShow);
-//        return booking;
-//    }
-//
-//    @PutMapping("{movie_show_id}/booking/update")
-//    @PreAuthorize("hasAuthority('UPDATE')")
-//    public BookingEntity updateBooking(@PathVariable final int movie_show_id,
-//                                       @RequestBody final BookingEntity booking) {
-//        final int booking_id = booking.getId();
-//        final ShowEntity show = this.findShowById(auditorium_id, show_id);
-//        final MovieShowsEntity movieShow = this.getMovieShowEntity(show, movie_show_id);
-//        movieShow.setShow(show)
-//                .getBookings()
-//                .remove(solveId(booking_id));
-//        movieShow.getBookings()
-//                .add(booking);
-//        this.movieShow.save(movieShow);
-//        return booking;
-//    }
-
-    /*
-     *   ============================= Useful methods ==========================
-     */
-
-    /* In database primary key starts with 1, but in list index starts with 0.
-    So to match the primary key with list index, I'm subtracting 1 from the path variable.*/
-    private int solveId(final int id) {
-        return id - 1;
-    }
-
-    private int actualId(final int id) {
-        return id + 1;
+        int count = 0;
+        List<String> seats = new ArrayList<>();
+        for (BookingEntity booking : bookings) {
+            count += booking.getTotalSeats();
+            seats.addAll(booking.getSeatNumbers());
+        }
+        return new BookedSeats(count, seats);
     }
 }

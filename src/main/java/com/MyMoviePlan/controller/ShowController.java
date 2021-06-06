@@ -7,14 +7,17 @@ import com.MyMoviePlan.exception.BookingNotFoundException;
 import com.MyMoviePlan.exception.MovieShowNotFoundException;
 import com.MyMoviePlan.exception.ShowNotFoundException;
 import com.MyMoviePlan.repository.BookingRepository;
+import com.MyMoviePlan.repository.MovieRepository;
 import com.MyMoviePlan.repository.MovieShowsRepository;
 import com.MyMoviePlan.repository.ShowRepository;
+import com.MyMoviePlan.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/show")
 @AllArgsConstructor
@@ -22,6 +25,8 @@ public class ShowController {
 
     private final ShowRepository show;
     private final MovieShowsRepository movieShow;
+    private final MovieRepository movie;
+    private final UserService service;
     private final BookingRepository booking;
 
     @GetMapping("{show_id}")
@@ -35,12 +40,6 @@ public class ShowController {
         return this.show.findAll();
     }
 
-    @PutMapping("update")
-    @PreAuthorize("hasAuthority('UPDATE')")
-    public ShowEntity updateShow(@RequestBody final ShowEntity show) {
-        return this.show.save(show);
-    }
-
     @DeleteMapping("delete/{show_id}")
     @PreAuthorize("hasAuthority('DELETE')")
     public void deleteShow(@PathVariable final int show_id) {
@@ -52,28 +51,37 @@ public class ShowController {
      *   ============================= Movie Show Controller ==========================
      */
 
-    @GetMapping("{show_id}/movie-shows/all")
+    @GetMapping("{show_id}/movie-show/all")
     public List<MovieShowsEntity> findAllMovieShows(@PathVariable final int show_id) {
         return this.findShowById(show_id)
                 .getMovieShows();
     }
 
-    @GetMapping("{show_id}/movie-shows/{movie_show_id}")
+    @GetMapping("{show_id}/movie-show/{movie_show_id}")
     public MovieShowsEntity findMovieShowById(@PathVariable final int show_id,
                                               @PathVariable final int movie_show_id) {
-        return this.getMovieShowEntity(this.findShowById(show_id), movie_show_id);
+        return this.findShowById(show_id)
+                .getMovieShows()
+                .stream()
+                .filter(movie_show -> movie_show.getId() == movie_show_id)
+                .findFirst()
+                .orElseThrow(
+                        () -> new MovieShowNotFoundException("Movie Show with id: "
+                                + movie_show_id + " not found"));
     }
 
-    @PostMapping("{show_id}/movie-shows/add")
+    @PostMapping("{show_id}/movie-show/add")
     @PreAuthorize("hasAuthority('WRITE')")
     public MovieShowsEntity saveMovieShow(@PathVariable final int show_id,
                                           @RequestBody final MovieShowsEntity movieShow) {
         final ShowEntity show = this.findShowById(show_id);
+        final int movieId = movieShow.getMovieId();
         movieShow.setShow(show);
+        movieShow.setMovieId(this.movie.findById(movieId).get().getId());
         return this.movieShow.save(movieShow);
     }
 
-    @PutMapping("{show_id}/movie-shows/update")
+    @PutMapping("{show_id}/movie-show/update")
     @PreAuthorize("hasAuthority('UPDATE')")
     public MovieShowsEntity updateMovieShow(@PathVariable final int show_id,
                                             @RequestBody final MovieShowsEntity movieShow) {
@@ -82,81 +90,66 @@ public class ShowController {
         return this.movieShow.save(movieShow);
     }
 
+    @DeleteMapping("{show_id}/movie-show/delete/{movie_show_id}")
+    @PreAuthorize("hasAuthority('UPDATE')")
+    public void deleteMovieShow(@PathVariable final int show_id,
+                                @PathVariable final int movie_show_id) {
+        final MovieShowsEntity movieShow = this.findMovieShowById(show_id, movie_show_id);
+        this.movieShow.deleteById(movieShow.getMovieId());
+    }
+
     /*
      *   ============================= Booking Controller ==========================
      */
 
-    @GetMapping("{show_id}/movie-shows/{movie_show_id}/booking/{booking_id}")
+    @GetMapping("{show_id}/movie-show/{movie_show_id}/booking/{booking_id}")
     @PreAuthorize("hasAuthority('READ')")
     public BookingEntity findBookingById(@PathVariable final int show_id,
                                          @PathVariable final int movie_show_id,
                                          @PathVariable final int booking_id) {
         final MovieShowsEntity movieShow = this.findMovieShowById(show_id, movie_show_id);
         return movieShow.getBookings()
-                .stream().filter(booking -> booking.getId() == solveId(booking_id))
+                .stream().filter(booking -> booking.getId() == booking_id)
                 .findFirst()
                 .orElseThrow(() -> new BookingNotFoundException("Booking with id: "
-                        + actualId(booking_id) + " not found."));
+                        + booking_id + " not found."));
     }
 
-    @GetMapping("{show_id}/movie-shows/{movie_show_id}/booking/all")
+    @GetMapping("{show_id}/movie-show/{movie_show_id}/booking/all")
     @PreAuthorize("hasAuthority('READ')")
     public List<BookingEntity> allBookings(@PathVariable final int show_id,
                                            @PathVariable final int movie_show_id) {
         return this.findMovieShowById(show_id, movie_show_id).getBookings();
     }
 
-    @PostMapping("{show_id}/movie-shows/{movie_show_id}/booking/add")
+    @PostMapping("{show_id}/movie-show/{movie_show_id}/booking/add")
     @PreAuthorize("hasAuthority('WRITE')")
     public BookingEntity saveBooking(@PathVariable final int show_id,
                                      @PathVariable final int movie_show_id,
                                      @RequestBody final BookingEntity booking) {
-        final ShowEntity show = this.findShowById(show_id);
-        final MovieShowsEntity movieShow = this.getMovieShowEntity(show, movie_show_id);
-        movieShow.setShow(show)
-                .getBookings()
-                .add(booking);
-        this.movieShow.save(movieShow);
-        return booking;
+        final MovieShowsEntity moveShow = this.findMovieShowById(show_id, movie_show_id);
+//        booking.setUserId(this.service.getLoggedInUser().getId());
+        booking.setUserId(this.service.findByMobile("8099531318").get().getId());
+        booking.setMovieShow(moveShow);
+        return this.booking.save(booking);
     }
 
-    @PutMapping("{show_id}/movie-shows/{movie_show_id}/booking/update")
+    @PutMapping("{show_id}/movie-show/{movie_show_id}/booking/update")
     @PreAuthorize("hasAuthority('UPDATE')")
     public BookingEntity updateBooking(@PathVariable final int show_id,
                                        @PathVariable final int movie_show_id,
                                        @RequestBody final BookingEntity booking) {
-        final int booking_id = booking.getId();
-        final ShowEntity show = this.findShowById(show_id);
-        final MovieShowsEntity movieShow = this.getMovieShowEntity(show, movie_show_id);
-        movieShow.setShow(show)
-                .getBookings()
-                .remove(solveId(booking_id));
-        movieShow.getBookings()
-                .add(booking);
-        this.movieShow.save(movieShow);
-        return booking;
+        final MovieShowsEntity moveShow = this.findMovieShowById(show_id, movie_show_id);
+        booking.setMovieShow(moveShow);
+        return this.booking.save(booking);
     }
 
-    /*
-     *   ============================= Useful methods ==========================
-     */
-
-    private MovieShowsEntity getMovieShowEntity(final ShowEntity show, final int movie_show_id) {
-        return show.getMovieShows()
-                .stream()
-                .filter(movie_show -> movie_show.getId() == solveId(movie_show_id))
-                .findFirst()
-                .orElseThrow(() -> new MovieShowNotFoundException("Movie Show with id: "
-                        + actualId(movie_show_id) + " not found"));
-    }
-
-    /* In database primary key starts with 1, but in list index starts with 0.
-    So to match the primary key with list index, I'm subtracting 1 from the path variable.*/
-    private int solveId(final int id) {
-        return id - 1;
-    }
-
-    private int actualId(final int id) {
-        return id + 1;
+    @DeleteMapping("{show_id}/movie-show/{movie_show_id}/booking/delete/{booking_id}")
+    @PreAuthorize("hasAuthority('READ')")
+    public void deleteBookingById(@PathVariable final int show_id,
+                                  @PathVariable final int movie_show_id,
+                                  @PathVariable final int booking_id) {
+        final BookingEntity booking = this.findBookingById(show_id, movie_show_id, booking_id);
+        this.booking.deleteById(booking.getId());
     }
 }
