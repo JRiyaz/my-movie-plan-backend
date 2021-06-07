@@ -3,16 +3,19 @@ version: '3'
 services:
   mysql-my-movie-plan:
     image: mysql:latest
+    container_name: mysql-my-movie-plan
     environment:
+      - MYSQL_ROOT_PASSWORD=admin@root
       - MYSQL_USER=mysql
       - MYSQL_PASSWORD=root
       - MYSQL_DATABASE=my_movie_plan
   springboot-docker-container:
     image: springboot-my-movie-plan
+    container_name: springboot-my-movie-plan
     ports:
-      -9090:5555
+      - 9090:5555
     build:
-      context: ./my-movie-plan
+      context: ./
       dockerfile: Dockerfile
     depends_on:
       - mysql-my-movie-plan
