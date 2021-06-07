@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('docker run MySQL image') {
+             steps {
+                 sh "docker run --name mysql-my_movie_plan -e MYSQL_ROOT_PASSWORD=admin@root -e MYSQL_DATABASE=my_movie_plan -e MYSQL_USER=mysql -e MYSQL_PASSWORD=root -d mysql:latest"
+             }
+        }
+
+        stage('docker images') {
+             steps {
+                 sh "docker images"
+             }
+        }
+    }
+}
