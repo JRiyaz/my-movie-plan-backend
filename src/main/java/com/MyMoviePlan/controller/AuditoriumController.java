@@ -224,6 +224,7 @@ public class AuditoriumController {
         booking.setUserId(this.service.getLoggedInUser().getId());
 //        booking.setUserId(this.service.findByMobile("8099531318").get().getId());
         booking.setMovieShow(moveShow);
+        booking.setBookingDetails(new BookingDetailsEntity(auditorium_id, show_id, movie_show_id, moveShow.getMovieId()));
         return this.booking.save(booking);
     }
 

@@ -49,6 +49,12 @@ public class BookingEntity implements Serializable {
     @JoinColumn(name = "payment_id")
     private PaymentEntity payment;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToOne(targetEntity = BookingDetailsEntity.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "booking_details_id")
+    private BookingDetailsEntity bookingDetails;
+
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

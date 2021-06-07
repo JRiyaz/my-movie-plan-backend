@@ -1,5 +1,6 @@
 package com.MyMoviePlan.controller;
 
+import com.MyMoviePlan.entity.BookingDetailsEntity;
 import com.MyMoviePlan.entity.BookingEntity;
 import com.MyMoviePlan.entity.UserEntity;
 import com.MyMoviePlan.exception.BookingNotFoundException;
@@ -49,5 +50,11 @@ public class BookingController {
     @PreAuthorize("hasAuthority('DELETE')")
     public void deleteBooking(@PathVariable final int id) {
         repository.deleteById(id);
+    }
+
+    @GetMapping("{id}/details")
+    @PreAuthorize("hasAuthority('READ')")
+    public BookingDetailsEntity findByDetailsId(@PathVariable final int id) {
+        return this.findById(id).getBookingDetails();
     }
 }
