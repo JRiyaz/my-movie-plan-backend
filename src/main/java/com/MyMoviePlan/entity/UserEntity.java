@@ -130,4 +130,11 @@ public class UserEntity implements Serializable {
         this.userRole = userRole;
         return this;
     }
+
+    public UserEntity setTerms(Boolean terms) {
+        this.terms = terms;
+        return this;
+    }
+
+
 }

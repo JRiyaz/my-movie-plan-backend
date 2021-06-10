@@ -69,6 +69,18 @@ public class UserService {
 
         if (!authorizeUser(user, getUserName()))
             throw new UnAuthorizedException("You are not authorized access this account");
+
+        userEntity.setName(isNullOrEmpty(userEntity.getName()) ? user.getName() : userEntity.getName())
+                .setEmail(isNullOrEmpty(userEntity.getEmail()) ? user.getEmail() : userEntity.getEmail())
+                .setMobile(isNullOrEmpty(userEntity.getMobile()) ? user.getMobile() : userEntity.getMobile())
+                .setTerms(user.getTerms())
+                .setPassword(user.getPassword())
+                .setUserRole(user.getUserRole())
+                .setAccountNonExpired(user.getIsAccountNonExpired())
+                .setAccountNonLocked(user.getIsAccountNonLocked())
+                .setCredentialsNonExpired(user.getIsCredentialsNonExpired())
+                .setEnabled(user.getIsEnabled());
+
         return repository.save(userEntity);
     }
 
@@ -91,13 +103,13 @@ public class UserService {
         } catch (Exception e) {
             throw new RuntimeException("SQL Unique key constrains volition");
         }
-        return new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(),  "Your account is created");
+        return new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), "Your account is created");
     }
 
     public HttpResponse deleteById(final String username) {
         final UserEntity user = this.getUser(username);
         repository.deleteById(user.getId());
-        return new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(),  "Your account is deleted");
+        return new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), "Your account is deleted");
     }
 
     public HttpResponse forgotPassword(final Credentials credentials) {
@@ -176,5 +188,9 @@ public class UserService {
         else
             return user.getUserRole().equals(ROLE_ADMIN) || user.getUserRole().equals(ROLE_SUPER_ADMIN);
 
+    }
+
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.equals(" ") || value.equals(null) ? true : false;
     }
 }

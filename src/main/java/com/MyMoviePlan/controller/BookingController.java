@@ -38,7 +38,7 @@ public class BookingController {
         else return repository.findAllByUserIdOrderByBookedOnAsc(user.getId());
     }
 
-    @GetMapping("{user_id}/all")
+    @GetMapping("{username}/all")
     @PreAuthorize("hasAuthority('READ')")
     public List<BookingEntity> findAllByUserId(@PathVariable String username) {
         if (!(username.contains("-") && username.length() > 10))
