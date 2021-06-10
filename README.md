@@ -22,6 +22,12 @@ languages.
 
 ## Steps to Set up
 
+NOTE:
+
+1. Please do remember to change the 'spring.datasource.url' property value in application-prod.properties file where
+    your database is running.
+2.  Also do change the ip address of backend in the front-end application as well. For more details please check - https://github.com/JRiyaz/my-movie-plan.git
+
 **1.0 Go to official Amazon Web Services site**
 
 ```bash
@@ -30,21 +36,19 @@ https://console.aws.amazon.com/ec2
 
 **2.0 Create New Instance**
 
-![App Screenshot](images/1.go-to-affecial-aws-site-and-select-ec2-option.PNG)
+![App Screenshot](images/1.open-aws-site-select-create-ec2-instance.PNG)
 
-![App Screenshot](images/2.select-launch-instances-to-create-new-instance.PNG)
+![App Screenshot](images/2.select-linux-2.PNG)
 
-![App Screenshot](images/3.select-linux-2-ami.PNG)
+![App Screenshot](images/3.configure-security-group.PNG)
 
-![App Screenshot](images/4.click-on-review-and-launch-option.PNG)
+![App Screenshot](images/4.create-new-key-pair-to-connect-to-ec2.PNG)
 
-![App Screenshot](images/5.create-a-new-key-pair-and-download-before-launching-instance.PNG)
+![App Screenshot](images/5.connect-to-ec2-instance.PNG)
 
 **3.0 Connect to the Instance**
 
-![App Screenshot](images/6.once-the-instance-is-running-click-on-connect.PNG)
-
-![App Screenshot](images/7.navigate-to-ssh-client-and-execute-the-two-commands-in-cmd-where-the-ppm-file-is-downloaded.PNG)
+![App Screenshot](images/6.ssh-client-details.PNG)
 
 **4.0 Open Command Prompt in your machine and navigate to the path where you have downloaded the pem file**
 
@@ -59,7 +63,7 @@ chmod 400 my-movie-plan.pem
 ssh -i "my-movie-plan.pem" ec2-user@ec2-54-172-237-186.compute-1.amazonaws.com
 ```
 
-![App Screenshot](images/8.open-cmd-naviage-to-dir-where-the-ppm-file-is-downloaded-and-execute-the-two-commands-copies-from-aws-console.PNG)
+![App Screenshot](images/7.connect-to-ec2-using-termial.PNG)
 
 **6.0 Update the Instance Once connected using the following command**
 
@@ -67,7 +71,7 @@ ssh -i "my-movie-plan.pem" ec2-user@ec2-54-172-237-186.compute-1.amazonaws.com
 sudo yum update -y
 ```
 
-![App Screenshot](images/9.execute-update-command.PNG)
+![App Screenshot](images/8.update-ec2-instance.PNG)
 
 **7.0 After updating the instance, install Java using the following command**
 
@@ -157,9 +161,7 @@ create an admin user, go-head and create the user**
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
 
-![App Screenshot](images/15.create-admin-user-in-jenkins.PNG)
-
-![App Screenshot](images/17.add-maven-path-to-jenkins.PNG)
+![App Screenshot](images/16.install-jenkins-suggested-plugins.PNG)
 
 **11.0 Open EC2 Instance console and Install Docker**
 
@@ -222,7 +224,7 @@ docker info
 sudo systemctl start jenkins
 ```
 
-![App Screenshot](images/13.install-docker.PNG)
+![App Screenshot](images/18.start-docker-and-provide-permissions.PNG)
 
 **13.0 Add Maven to Jenkins Global tool Configuration**
 
@@ -231,10 +233,14 @@ sudo systemctl start jenkins
 ```
 
 **14.0 Open Jenkins and create a pipeline job for MYSQL**
-![App Screenshot](images/16.create-a-new-pipeline-job.PNG)
+![App Screenshot](images/17.create-a-pipe-line-project-for-mysql.PNG)
 
 **15.0 Open Jenkins and create a pipeline job for Spring Boot**
-![App Screenshot](images/16.create-a-new-pipeline-job.PNG)
+![App Screenshot](images/25.create-backend-pipeline-job.PNG)
+![App Screenshot](images/26.backend-job-configuration.PNG)
+
+**15.1 Add Maven to Jenkins**
+![App Screenshot](images/30.register-mvn-in-jenkins.PNG)
 
 **16.0 Open Jenkins and create a pipeline job for Angular**
 ![App Screenshot](images/16.create-a-new-pipeline-job.PNG)
@@ -243,21 +249,26 @@ sudo systemctl start jenkins
 
 ![App Screenshot](images/19.jenkins-builds.PNG)
 
-**16. Once the job is built successfully execute the following command to view the Docker images and containers**
-
-```bash
-sudo docker images
-sudo docker ps
-```
-
-**17. Check if the app is running**
+**18. Check if the app is running**
 
 ```bash
 The IPv4 addresses of EC2 instance and the port on which the angular app is running: http://54.172.237.186:4040/
 ```
 
-![App Screenshot](images/20.app-running-on-port-5555.PNG)
-
-![App Screenshot](images/22.add-employee.PNG)
-
-![App Screenshot](images/21.list-of-employees.PNG)
+![App Screenshot](images/40.home-page-before-login.PNG)
+![App Screenshot](images/41.login-page.PNG)
+![App Screenshot](images/42.after-login.PNG)
+![App Screenshot](images/43.admin-page.PNG)
+![App Screenshot](images/44.profile-page.PNG)
+![App Screenshot](images/45.all-movies-page.PNG)
+![App Screenshot](images/46.movie-page.PNG)
+![App Screenshot](images/47.ticket-booking-page.PNG)
+![App Screenshot](images/48.no-of-tickets.PNG)
+![App Screenshot](images/50.payment-page.PNG)
+![App Screenshot](images/51.add-new-cinema-hall.PNG)
+![App Screenshot](images/52.add-new-movie.PNG)
+![App Screenshot](images/53.seat-selection.PNG)
+![App Screenshot](images/54.booking-confirmation.PNG)
+![App Screenshot](images/55.about-us-page.PNG)
+![App Screenshot](images/60.front-end-ip-address-setting.PNG)
+![App Screenshot](images/65.database-setting-in-backend.PNG)
