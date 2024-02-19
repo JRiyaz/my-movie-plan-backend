@@ -14,7 +14,7 @@
     <artifactId>my-movie-plan-backend</artifactId>
     <version>1.0</version>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>My Movie Plan</name>
     <description>
         My Movie Plan is an online movie ticket booking web application with a rich and user-friendly interface.
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
 
     </dependencies>
@@ -141,8 +141,18 @@
 
         <resources>
             <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yaml</include>
+                </includes>
+            </resource>
+            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
             </resource>
         </resources>
 
