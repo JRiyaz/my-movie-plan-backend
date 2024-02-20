@@ -53,11 +53,15 @@ public class MovieShowsEntity implements Serializable {
     private PriceEntity price;
 
     public MovieShowsEntity(int id, Date start, Date end, List<BookingEntity> bookings, int movieId) {
-        this.id  = id;
+        this.id = id;
         this.start = start;
         this.end = end;
         this.bookings = bookings;
         this.movieId = movieId;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public MovieShowsEntity setId(int id) {

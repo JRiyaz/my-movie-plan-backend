@@ -2,6 +2,7 @@ package com.MyMoviePlan.controller;
 
 import com.MyMoviePlan.entity.MovieEntity;
 import com.MyMoviePlan.exception.MovieNotFoundException;
+import com.MyMoviePlan.model.MovieShowsFilter;
 import com.MyMoviePlan.repository.MovieRepository;
 import com.MyMoviePlan.repository.MovieShowsRepository;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,10 @@ public class MovieController {
             movies = new ArrayList<>();
             allMovies = this.findAll();
             movieShowsRepository.findFewUpComing(Integer.parseInt(records.get()))
+                    .stream()
+                    .map(MovieShowsFilter::new)
+                    .distinct()
+                    .map(MovieShowsFilter::unwrap)
                     .forEach(m_show -> movies.add(allMovies.stream()
                             .filter(movie -> (movie.getId() == m_show.getMovieId() && movie.getRelease().getTime() > new Date().getTime()))
                             .findFirst().orElse(null)));
@@ -45,6 +50,10 @@ public class MovieController {
             movies = new ArrayList<>();
             allMovies = this.findAll();
             movieShowsRepository.findAllUpComing()
+                    .stream()
+                    .map(MovieShowsFilter::new)
+                    .distinct()
+                    .map(MovieShowsFilter::unwrap)
                     .forEach(m_show -> movies.add(allMovies.stream()
                             .filter(movie -> movie.getId() == m_show.getMovieId() && movie.getRelease().getTime() > new Date().getTime())
                             .findFirst().orElse(null)));
@@ -62,6 +71,10 @@ public class MovieController {
             movies = new ArrayList<>();
             allMovies = this.findAll();
             movieShowsRepository.findFewNowPlaying(Integer.parseInt(records.get()))
+                    .stream()
+                    .map(MovieShowsFilter::new)
+                    .distinct()
+                    .map(MovieShowsFilter::unwrap)
                     .forEach(m_show -> movies.add(allMovies.stream()
                             .filter(movie -> movie.getId() == m_show.getMovieId())
                             .findFirst().orElse(null)));
@@ -69,6 +82,10 @@ public class MovieController {
             movies = new ArrayList<>();
             allMovies = this.findAll();
             movieShowsRepository.findAllNowPlaying()
+                    .stream()
+                    .map(MovieShowsFilter::new)
+                    .distinct()
+                    .map(MovieShowsFilter::unwrap)
                     .forEach(m_show -> movies.add(allMovies.stream()
                             .filter(movie -> movie.getId() == m_show.getMovieId())
                             .findFirst().orElse(null)));
@@ -82,6 +99,10 @@ public class MovieController {
         final List<MovieEntity> movies = new ArrayList<>();
         final List<MovieEntity> allMovies = this.findAll();
         movieShowsRepository.findAllNowPlayingAndUpComing()
+                .stream()
+                .map(MovieShowsFilter::new)
+                .distinct()
+                .map(MovieShowsFilter::unwrap)
                 .forEach(m_show -> movies.add(allMovies.stream()
                         .filter(movie -> movie.getId() == m_show.getMovieId())
                         .findFirst().orElse(null)));
@@ -94,6 +115,10 @@ public class MovieController {
         final List<MovieEntity> movies = new ArrayList<>();
         final List<MovieEntity> allMovies = this.findAll();
         movieShowsRepository.findAllNotPlaying()
+                .stream()
+                .map(MovieShowsFilter::new)
+                .distinct()
+                .map(MovieShowsFilter::unwrap)
                 .forEach(m_show -> movies.add(allMovies.stream()
                         .filter(movie -> movie.getId() == m_show.getMovieId())
                         .findFirst().orElse(null)));

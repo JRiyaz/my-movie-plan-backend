@@ -20,6 +20,7 @@ public class PriceEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "_general")
     private double general;
 
     private double silver;

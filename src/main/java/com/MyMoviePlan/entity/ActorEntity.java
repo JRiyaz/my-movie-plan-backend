@@ -25,7 +25,7 @@ public class ActorEntity implements Serializable {
 
     private String role;
 
-    @Column(length = Integer.MAX_VALUE, columnDefinition="TEXT")
+    @Column(length = Integer.MAX_VALUE)
     private String image;
 	
 	@JsonIgnore

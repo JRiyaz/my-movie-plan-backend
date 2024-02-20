@@ -35,6 +35,7 @@ public class UserEntity implements Serializable {
     @Column(length = 60)
     private String gender;
 
+    @Column(name = "_password")
     private String password;
 
     private Boolean terms;

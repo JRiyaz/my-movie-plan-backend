@@ -4,6 +4,7 @@ import com.MyMoviePlan.entity.BookingEntity;
 import com.MyMoviePlan.entity.MovieShowsEntity;
 import com.MyMoviePlan.exception.MovieShowNotFoundException;
 import com.MyMoviePlan.model.BookedSeats;
+import com.MyMoviePlan.model.MovieShowsFilter;
 import com.MyMoviePlan.repository.MovieShowsRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,26 +33,56 @@ public class MovieShowController {
     @PreAuthorize("hasAuthority('READ')")
     public List<MovieShowsEntity> upComing(@RequestParam(value = "records", required = false) Optional<String> records) {
         if (records.isPresent())
-            return repository.findFewUpComing(Integer.parseInt(records.get()));
-        return repository.findAllUpComing();
+            return repository.findFewUpComing(Integer.parseInt(records.get()))
+                    .stream()
+                    .map(MovieShowsFilter::new)
+                    .distinct()
+                    .map(MovieShowsFilter::unwrap)
+                    .collect(Collectors.toList());
+        return repository.findAllUpComing()
+                .stream()
+                .map(MovieShowsFilter::new)
+                .distinct()
+                .map(MovieShowsFilter::unwrap)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("now-playing")
     public List<MovieShowsEntity> nowPlaying(@RequestParam(value = "records", required = false) Optional<String> records) {
         if (records.isPresent())
-            return repository.findFewNowPlaying(Integer.parseInt(records.get()));
-        return repository.findAllNowPlaying();
+            return repository.findFewNowPlaying(Integer.parseInt(records.get()))
+                    .stream()
+                    .map(MovieShowsFilter::new)
+                    .distinct()
+                    .map(MovieShowsFilter::unwrap)
+                    .collect(Collectors.toList());
+        return repository.findAllNowPlaying()
+                .stream()
+                .map(MovieShowsFilter::new)
+                .distinct()
+                .map(MovieShowsFilter::unwrap)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("now-playing-up-coming")
     public List<MovieShowsEntity> nowPlayingAndUpComing() {
-        return repository.findAllNowPlayingAndUpComing();
+        return repository.findAllNowPlayingAndUpComing()
+                .stream()
+                .map(MovieShowsFilter::new)
+                .distinct()
+                .map(MovieShowsFilter::unwrap)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("not-playing")
     @PreAuthorize("hasAuthority('WRITE')")
     public List<MovieShowsEntity> notPlaying() {
-        return repository.findAllNotPlaying();
+        return repository.findAllNotPlaying()
+                .stream()
+                .map(MovieShowsFilter::new)
+                .distinct()
+                .map(MovieShowsFilter::unwrap)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("all")

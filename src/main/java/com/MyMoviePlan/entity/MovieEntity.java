@@ -21,15 +21,16 @@ public class MovieEntity implements Serializable {
 
     private String name;
 
-    @Column(length = Integer.MAX_VALUE, columnDefinition = "TEXT")
+    @Column(length = Integer.MAX_VALUE)
     private String image;
 
-    @Column(name = "bg_image", length = Integer.MAX_VALUE, columnDefinition="TEXT")
+    @Column(name = "bg_image", length = Integer.MAX_VALUE)
     private String bgImage;
 
     @Column(length = 9000)
     private String story;
 
+    @Column(name = "_year")
     private String year;
 
     private String duration;
@@ -41,8 +42,10 @@ public class MovieEntity implements Serializable {
     private Date addedOn;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "_release")
     private Date release;
 
+    @Column(name = "_language")
     private String language;
 
     @ToString.Exclude

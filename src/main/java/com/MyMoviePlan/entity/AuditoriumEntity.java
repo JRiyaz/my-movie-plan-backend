@@ -21,8 +21,8 @@ public class AuditoriumEntity implements Serializable {
     private int id;
 
     private String name;
-
-    @Column(length = Integer.MAX_VALUE, columnDefinition="TEXT")
+    //  @Column(length = Integer.MAX_VALUE, columnDefinition="NVARCHAR(MAX)")
+    @Column(length = Integer.MAX_VALUE)
     private String image;
 
     private String email;
